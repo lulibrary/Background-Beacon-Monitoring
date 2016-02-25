@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="uk.ac.lancaster.library.backgroundbeacons"
+    version="0.0.1">
+
+  <name>Background Beacon Detection Plugion</name>
+  <description>Proximity Beacon background monitoring for android (supporting iBeacons)</description>
+  <license>Apache 2.0</license>
+
+  <js-module src="www/BackgroundBeaconMonitoring.js" name="BackgroundBeaconMonitoring">
+    <clobbers target="BackgroundBeaconMonitoring" />
+  </js-module>
+
+  <platform name="android">
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="BackgroundBeaconManager" >
+      <param name="android-package" value="uk.ac.lancaster.library.backgroundbeacons.BackgroundBeaconManager"/>
+      </feature>
+    </config-file>
+
+    <config-file target="AndroidManifest.xml" parent="/manifest">
+      <uses-permission android:name="android.permission.BLUETOOTH" />
+      <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+      <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+      <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+      <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    </config-file>
+
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+      <receiver android:name="uk.ac.lancaster.library.backgroundbeacons.StartupBroadcastReceiver" >
+        <intent-filter>
+          <action android:name="android.intent.action.BOOT_COMPLETED" />
+          <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+          <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+        </intent-filter>
+      </receiver>
+      <service android:enabled="true"
+        android:exported="true"
+        android:isolatedProcess="false"
+        android:label="myJourneysBackgroundBeaconService"
+        android:name="uk.ac.lancaster.library.backgroundbeacons.BackgroundBeaconService" />
+    </config-file>
+
+    <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/BackgroundBeaconManager.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
+    <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/BackgroundBeaconService.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
+    <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/StartupBroadcastReceiver.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
+    <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/SharedPreferencesUtility.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
+
+    <!-- <source-file src="libs/android/altbeacon.jar" target-dir="libs" framework="true" /> -->
+  </platform>
+
+</plugin>

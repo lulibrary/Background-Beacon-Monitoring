@@ -1,18 +1,19 @@
 package uk.ac.lancaster.library.backgroundbeacons;
 
 import uk.ac.lancaster.library.backgroundbeacons.BeaconEvent;
-import uk.ac.lancaster.library.backgroundbeacons.Region;
+import uk.ac.lancaster.library.backgroundbeacons.BeaconRegion;
 
 import org.json.JSONObject;
+import org.json.JSONException;
 
 public class BeaconTrackingEvent {
 
   private String deviceId;
   private BeaconEvent beaconEvent;
-  private Region region;
-  private String timestamp
+  private BeaconRegion region;
+  private String timestamp;
 
-  public BeaconTrackingEvent(String deviceId, BeaconEvent beaconEvent, Region region, String timestamp) {
+  public BeaconTrackingEvent(String deviceId, BeaconEvent beaconEvent, BeaconRegion region, String timestamp) {
     this.deviceId = deviceId;
     this.beaconEvent = beaconEvent;
     this.region = region;
@@ -23,10 +24,18 @@ public class BeaconTrackingEvent {
 
     JSONObject response = new JSONObject();
 
-    response.accumulate("device_id", this.deviceId);
-    response.accumulate("beacon_event", this.beaconEvent.toJsonObject().toString());
-    response.accumulate("region", this.region.toJsonObject().toString());
-    response.accumulate("event_timestamp", this.timestamp);
+    try {
+
+      response.accumulate("device_id", this.deviceId);
+      response.accumulate("beacon_event", this.beaconEvent.toJsonObject());
+      response.accumulate("region", this.region.toJsonObject());
+      response.accumulate("event_timestamp", this.timestamp);
+
+    } catch (JSONException e) {
+
+    }
+
+    return response;
 
   }
 

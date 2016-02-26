@@ -1,17 +1,18 @@
 package uk.ac.lancaster.library.backgroundbeacons;
 
-import uk.ac.lancaster.library.backgroundbeacons.Beacon;
+import uk.ac.lancaster.library.backgroundbeacons.BeaconInfo;
 import org.json.JSONObject;
+import org.json.JSONException;
 
 public class BeaconEvent {
 
   private String eventType;
-  private Beacon beacon;
+  private BeaconInfo beacon;
   private String proximity;
   private String accuracy;
   private String rssi;
 
-  public BeaconEvent(String eventType, Beacon beacon, String proximity, String accuracy, String rssi) {
+  public BeaconEvent(String eventType, BeaconInfo beacon, String proximity, String accuracy, String rssi) {
     this.eventType = eventType;
     this.beacon = beacon;
     this.proximity = proximity;
@@ -23,11 +24,29 @@ public class BeaconEvent {
 
     JSONObject response = new JSONObject();
 
-    response.accumulate("eventType", this.eventType);
-    response.accumulate("beacon", this.beacon.toJson().toString());
-    response.accumulate("proximity", this.proximity);
-    response.accumulate("accuracy", this.accuracy);
-    response.accumulate("rssi", this.rssi);
+    try {
+
+      response.accumulate("eventType", this.eventType);
+
+      if (!this.beacon.isEmpty()) {
+        response.accumulate("beacon", this.beacon.toJsonObject());
+      }
+
+      if (this.proximity != null) {
+        response.accumulate("proximity", this.proximity);
+      }
+
+      if (this.accuracy != null) {
+        response.accumulate("accuracy", this.accuracy);
+      }
+
+      if (this.rssi != null) {
+        response.accumulate("rssi", this.rssi);
+      }
+
+    } catch (JSONException e) {
+
+    }
 
     return response;
 

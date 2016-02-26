@@ -13,6 +13,8 @@ public class SharedPreferencesUtility {
   public static final String API_TOKEN = "API_TOKEN";
   public static final String API_USER = "API_USER";
   public static final String DEVICE_ID = "DEVICE_ID";
+  public static final String API_URL = "API_URL";
+  public static final String API_VERSION = "API_VERSION";
 
   private Context context;
   private SharedPreferences settings;
@@ -36,11 +38,18 @@ public class SharedPreferencesUtility {
   }
 
   public void setDeviceId(String text) {
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", "Before put string");
     this.editor.putString(DEVICE_ID, text);
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", "After put string");
     this.editor.commit();
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", "After commit");
+  }
+
+  public void setApiUrl(String text) {
+    this.editor.putString(API_URL, text);
+    this.editor.commit();
+  }
+
+  public void setApiVersion(String text) {
+    this.editor.putString(API_VERSION, text);
+    this.editor.commit();
   }
 
   public String getApiToken() {
@@ -55,6 +64,14 @@ public class SharedPreferencesUtility {
     return this.settings.getString(DEVICE_ID, null);
   }
 
+  public String getApiUrl() {
+    return this.settings.getString(API_URL, null);
+  }
+
+  public String getApiVersion() {
+    return this.settings.getString(API_VERSION, null);
+  }
+
   public boolean exist() {
 
     if (!this.settings.contains(API_TOKEN)) {
@@ -66,6 +83,14 @@ public class SharedPreferencesUtility {
     }
 
     if (!this.settings.contains(DEVICE_ID)) {
+      return false;
+    }
+
+    if (!this.settings.contains(API_VERSION)) {
+      return false;
+    }
+
+    if (!this.settings.contains(API_URL)) {
       return false;
     }
 

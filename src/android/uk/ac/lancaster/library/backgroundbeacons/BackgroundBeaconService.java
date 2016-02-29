@@ -40,6 +40,13 @@ public class BackgroundBeaconService extends Service implements BootstrapNotifie
   private Region region;
   private SharedPreferencesUtility settings;
   private BeaconTrackingService beaconTrackingService;
+  private final IBinder mBinder = new LocalBinder();
+
+  public class LocalBinder extends Binder {
+    BackgroundBeaconService getService() {
+      return BackgroundBeaconService.this;
+    }
+  }
 
   public void onCreate() {
 
@@ -239,7 +246,7 @@ public class BackgroundBeaconService extends Service implements BootstrapNotifie
   }
 
   public IBinder onBind(Intent intent) {
-    return null;
+    return mBinder;
   }
 
   public void onBeaconServiceConnect() {
@@ -273,6 +280,10 @@ public class BackgroundBeaconService extends Service implements BootstrapNotifie
 
     return "ProximityUnknown";
 
+  }
+
+  public void testBinding() {
+    Log.d("uk.ac.lancaster.library.backgroundbeacons", "TESTING SERVICE IS BOUND");
   }
 
 }

@@ -22,7 +22,7 @@ public class BackgroundBeaconManager extends CordovaPlugin {
 
   private SharedPreferencesUtility settings;
   private BackgroundBeaconService backgroundBeaconService;
-  boolean mBound = false;
+  boolean serviceBound = false;
 
   public BackgroundBeaconManager() {
 
@@ -32,11 +32,7 @@ public class BackgroundBeaconManager extends CordovaPlugin {
     super.initialize(cordova, webView);
     this.settings = new SharedPreferencesUtility(this.cordova.getActivity().getApplicationContext());
 
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", "Starting intent service");
 
-    Intent startServiceIntent = new Intent(this.cordova.getActivity().getApplicationContext(), BackgroundBeaconService.class);
-    this.cordova.getActivity().getApplicationContext().bindService(startServiceIntent, mConnection, Context.BIND_AUTO_CREATE);
-    this.cordova.getActivity().getApplicationContext().startService(startServiceIntent);
   }
 
   public boolean execute(String action, JSONArray args, CallbackContext callbackContent) throws JSONException {
@@ -56,11 +52,57 @@ public class BackgroundBeaconManager extends CordovaPlugin {
         Log.d("uk.ac.lancaster.library.backgroundbeacons", "Preferences already exist");
       }
 
-      if (mBound) {
-        backgroundBeaconService.testBinding();
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "Starting intent service");
+
+      Intent startServiceIntent = new Intent(this.cordova.getActivity().getApplicationContext(), BackgroundBeaconService.class);
+      this.cordova.getActivity().getApplicationContext().bindService(startServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+      this.cordova.getActivity().getApplicationContext().startService(startServiceIntent);
+
+      callbackContent.success();
+
+    } else if (action.equals("startMonitoringRegion")) {
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "Started monitoring region");
+      if(serviceBound) {
+
+        Integer major;
+        Integer minor;
+
+        if (args.getString(2).isEmpty()) {
+          major = null;
+        } else {
+          major = args.getInt(2);
+        }
+
+        if (args.getString(3).isEmpty()) {
+          minor = null;
+        } else {
+          minor = args.getInt(3);
+        }
+
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Major: " + major);
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Minor: " + minor);
+
+        backgroundBeaconService.startMonitoringRegion(args.getString(0), args.getString(1), major, minor);
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Service bound and starting monitoring region called");
+        callbackContent.success();
+      } else {
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Service not bound");
+        callbackContent.error("SERVICE NOT BOUND");
+      }
+    } else if (action.equals("stopMonitoringRegion")) {
+
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "Started monitoring region");
+      if(serviceBound) {
+        backgroundBeaconService.stopMonitoringRegion(args.getString(0));
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Service bound and stop monitoring region called");
+        callbackContent.success();
+      } else {
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Service not bound");
+        callbackContent.error("SERVICE NOT BOUND");
       }
 
     } else {
+      callbackContent.error("UNKNOWN OPERATION");
       return false;
     }
 
@@ -68,16 +110,16 @@ public class BackgroundBeaconManager extends CordovaPlugin {
 
   }
 
-  private ServiceConnection mConnection = new ServiceConnection() {
+  private ServiceConnection serviceConnection = new ServiceConnection() {
 
     public void onServiceConnected(ComponentName className, IBinder service) {
       LocalBinder binder = (LocalBinder) service;
       backgroundBeaconService = binder.getService();
-      mBound = true;
+      serviceBound = true;
     }
 
     public void onServiceDisconnected(ComponentName arg0) {
-      mBound = false;
+      serviceBound = false;
     }
 
   };

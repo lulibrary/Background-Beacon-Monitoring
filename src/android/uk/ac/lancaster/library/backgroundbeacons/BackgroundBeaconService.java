@@ -12,23 +12,19 @@ import android.util.Log;
 import java.util.Collection;
 import org.altbeacon.beacon.*;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
-import org.altbeacon.beacon.service.BeaconService;
-import org.altbeacon.beacon.startup.BootstrapNotifier;
-import org.altbeacon.beacon.startup.RegionBootstrap;
+// import org.altbeacon.beacon.service.BeaconService;
+// import org.altbeacon.beacon.startup.BootstrapNotifier;
+// import org.altbeacon.beacon.startup.RegionBootstrap;
 import android.content.ServiceConnection;
 
-import java.util.Date;
-import java.util.TimeZone;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashMap;
 
 import uk.ac.lancaster.library.backgroundbeacons.SharedPreferencesUtility;
-import uk.ac.lancaster.library.backgroundbeacons.BeaconTrackingEvent;
-import uk.ac.lancaster.library.backgroundbeacons.BeaconTrackingService;
-import uk.ac.lancaster.library.backgroundbeacons.BeaconInfo;
-import uk.ac.lancaster.library.backgroundbeacons.BeaconEvent;
-import uk.ac.lancaster.library.backgroundbeacons.BeaconRegion;
+import uk.ac.lancaster.library.backgroundbeacons.BeaconLoggingMonitorNotifier;
 
-public class BackgroundBeaconService extends Service implements BootstrapNotifier, BeaconConsumer, RangeNotifier {
+public class BackgroundBeaconService extends Service {
 
   public BackgroundBeaconService()  {
     super();
@@ -36,11 +32,11 @@ public class BackgroundBeaconService extends Service implements BootstrapNotifie
 
   private BackgroundPowerSaver backgroundPowerSaver;
   private BeaconManager iBeaconManager;
-  private RegionBootstrap regionBootstrap;
-  private Region region;
   private SharedPreferencesUtility settings;
-  private BeaconTrackingService beaconTrackingService;
   private final IBinder mBinder = new LocalBinder();
+  private HashMap<String, Region> monitoringRegions;
+  private BeaconConsumer monitoringConsumer;
+  private MonitorNotifier notifier;
 
   public class LocalBinder extends Binder {
     BackgroundBeaconService getService() {
@@ -69,14 +65,8 @@ public class BackgroundBeaconService extends Service implements BootstrapNotifie
     backgroundPowerSaver = new BackgroundPowerSaver(this);
     iBeaconManager.setDebug(true);
 
-    region = new Region("testingRegion", Identifier.parse("f7826da6-4fa2-4e98-8024-bc5b71e0893e"), null, null);
-    regionBootstrap = new RegionBootstrap(this, region);
-
-    iBeaconManager.bind(this);
-
-    beaconTrackingService = new BeaconTrackingService(this.settings);
-
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: Created RegionBootstrap in BackgroundBeaconService.");
+    monitoringRegions = new HashMap<String, Region>();
+    monitoringConsumer = new MonitoringConsumer(this);
 
   }
 
@@ -84,206 +74,186 @@ public class BackgroundBeaconService extends Service implements BootstrapNotifie
     Log.d("uk.ac.lancaster.library.backgroundbeacons", "Destroying BackgroundBeaconService");
   }
 
-  public void didEnterRegion(Region region) {
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: Entered region.");
-
-    BeaconInfo beaconInfo = new BeaconInfo(null, null, null);
-    BeaconEvent beaconEvent = new BeaconEvent("onEnterRegion", beaconInfo, null, null, null);
-
-    String regionIdentifier = null;
-    String regionUUID = null;
-    String regionMajor = null;
-    String regionMinor = null;
-
-    if (region.getUniqueId() != null) {
-      regionIdentifier = region.getUniqueId().toString();
-    }
-
-    if (region.getId1() != null) {
-      regionUUID = region.getId1().toString();
-    }
-
-    if (region.getId2() != null) {
-      regionMajor = region.getId2().toString();
-    }
-
-    if (region.getId3() != null) {
-      regionMinor = region.getId3().toString();
-    }
-
-    BeaconRegion beaconRegion = new BeaconRegion(regionIdentifier, regionUUID, regionMajor, regionMinor);
-
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-    String timestamp = dateFormat.format(new Date());
-
-    BeaconTrackingEvent beaconTrackingEvent = new BeaconTrackingEvent(this.settings.getDeviceId(), beaconEvent, beaconRegion, timestamp);
-
-    beaconTrackingService.EnterRegionEvent(beaconTrackingEvent);
-
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", beaconTrackingEvent.toJsonObject().toString());
-  }
-
-  public void didExitRegion(Region region) {
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: Exited region.");
-
-    BeaconInfo beaconInfo = new BeaconInfo(null, null, null);
-    BeaconEvent beaconEvent = new BeaconEvent("onExitRegion", beaconInfo, null, null, null);
-
-    String regionIdentifier = null;
-    String regionUUID = null;
-    String regionMajor = null;
-    String regionMinor = null;
-
-    if (region.getUniqueId() != null) {
-      regionIdentifier = region.getUniqueId().toString();
-    }
-
-    if (region.getId1() != null) {
-      regionUUID = region.getId1().toString();
-    }
-
-    if (region.getId2() != null) {
-      regionMajor = region.getId2().toString();
-    }
-
-    if (region.getId3() != null) {
-      regionMinor = region.getId3().toString();
-    }
-
-    BeaconRegion beaconRegion = new BeaconRegion(regionIdentifier, regionUUID, regionMajor, regionMinor);
-
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-    String timestamp = dateFormat.format(new Date());
-
-    BeaconTrackingEvent beaconTrackingEvent = new BeaconTrackingEvent(this.settings.getDeviceId(), beaconEvent, beaconRegion, timestamp);
-
-    beaconTrackingService.ExitRegionEvent(beaconTrackingEvent);
-
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", beaconTrackingEvent.toJsonObject().toString());
-  }
-
-  public void didDetermineStateForRegion(int state, Region region) {
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: Region changed state.");
-  }
-
-  public void rangeRegion() {
-    try {
-      Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: Starting to range regions");
-
-      iBeaconManager.startRangingBeaconsInRegion(region);
-      iBeaconManager.setRangeNotifier(this);
-
-    } catch (RemoteException e) {
-      Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: RANGE REMOTE EXCEPTION");
-    }
-  }
-
-  public void didRangeBeaconsInRegion(final Collection<Beacon> beacons, final Region region) {
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", "didRangeBeaconsInRegion called");
-
-    String regionIdentifier = null;
-    String regionUUID = null;
-    String regionMajor = null;
-    String regionMinor = null;
-
-    if (region.getUniqueId() != null) {
-      regionIdentifier = region.getUniqueId().toString();
-    }
-
-    if (region.getId1() != null) {
-      regionUUID = region.getId1().toString();
-    }
-
-    if (region.getId2() != null) {
-      regionMajor = region.getId2().toString();
-    }
-
-    if (region.getId3() != null) {
-      regionMinor = region.getId3().toString();
-    }
-
-    BeaconRegion beaconRegion = new BeaconRegion(regionIdentifier, regionUUID, regionMajor, regionMinor);
-
-    for (Beacon beacon: beacons) {
-      Log.d("uk.ac.lancaster.library.backgroundbeacons", "I see beacon " + beacon);
-
-      String beaconUUID = null;
-      String beaconMajor = null;
-      String beaconMinor = null;
-
-      if (beacon.getId1() != null) {
-        beaconUUID = beacon.getId1().toString();
-      }
-
-      if (beacon.getId2() != null) {
-        beaconMajor = beacon.getId2().toString();
-      }
-
-      if (beacon.getId3() != null) {
-        beaconMinor = beacon.getId3().toString();
-      }
-
-      BeaconInfo beaconInfo = new BeaconInfo(beaconUUID, beaconMajor, beaconMinor);
-      BeaconEvent beaconEvent = new BeaconEvent("onExitRegion", beaconInfo, beaconDistanceToProximity(beacon.getDistance()), Double.toString(beacon.getDistance()), Integer.toString(beacon.getRssi()));
-
-      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-      dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-      String timestamp = dateFormat.format(new Date());
-
-      BeaconTrackingEvent beaconTrackingEvent = new BeaconTrackingEvent(this.settings.getDeviceId(), beaconEvent, beaconRegion, timestamp);
-
-      beaconTrackingService.RangeBeaconEvent(beaconTrackingEvent);
-
-      Log.d("uk.ac.lancaster.library.backgroundbeacons", beaconTrackingEvent.toJsonObject().toString());
-
-    }
-  }
-
-  public Context getApplicationContext() {
-    return this.getApplication().getApplicationContext();
-  }
-
   public IBinder onBind(Intent intent) {
     return mBinder;
-  }
-
-  public void onBeaconServiceConnect() {
-      Log.d("uk.ac.lancaster.library.backgroundbeacons", "Connected to iBeacon Service");
-      this.rangeRegion();
-  }
-
-  public void unbindService(ServiceConnection connection) {
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", "unbind service");
-    this.getApplicationContext().unbindService(connection);
-  }
-
-  public boolean bindService(Intent intent, ServiceConnection connection, int mode) {
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", "Bind Service");
-    return this.getApplicationContext().bindService(intent, connection, mode);
-  }
-
-  private String beaconDistanceToProximity(double distance) {
-
-    if (distance > 0.0 && distance < 0.5) {
-      return "ProximityImmediate";
-    }
-
-    if (distance > 0.5 && distance < 3.0) {
-      return "ProximityNear";
-    }
-
-    if (distance > 3.0) {
-      return "ProximityFar";
-    }
-
-    return "ProximityUnknown";
-
   }
 
   public void testBinding() {
     Log.d("uk.ac.lancaster.library.backgroundbeacons", "TESTING SERVICE IS BOUND");
   }
+
+  public void startMonitoringRegion(String identifier, String uuid, Integer major, Integer minor) {
+
+    Log.d("uk.ac.lancaster.library.backgroundbeacons", "Before local method declaration");
+
+    Identifier regionMajor;
+    Identifier regionMinor;
+
+    Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: starting monitoring region");
+
+    if (major == null) {
+      regionMajor = null;
+    } else {
+      regionMajor = Identifier.fromInt(major);
+    }
+
+    if (minor == null) {
+      regionMinor = null;
+    } else {
+      regionMinor = Identifier.fromInt(minor);
+    }
+
+    Region region = new Region(identifier, Identifier.parse(uuid), regionMajor, regionMinor);
+
+    monitoringRegions.put(identifier, region);
+
+    Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: added region to array");
+
+    iBeaconManager.setMonitorNotifier(new BeaconLoggingMonitorNotifier(this.settings));
+
+    Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: set notifier");
+
+    try {
+
+      iBeaconManager.startMonitoringBeaconsInRegion(region);
+
+      if(iBeaconManager.isBackgroundModeUninitialized()) {
+        iBeaconManager.setBackgroundMode(true);
+      }
+
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: started monitoring region");
+
+    } catch (RemoteException e) {
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "Error monitoring region");
+    }
+
+  }
+
+  public void stopMonitoringRegion(String identifier) {
+
+    Region region = monitoringRegions.get(identifier);
+
+    monitoringRegions.remove(identifier);
+
+    try {
+      iBeaconManager.stopMonitoringBeaconsInRegion(region);
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: stopped monitoring region");
+    } catch (RemoteException e) {
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: error stopping monitoring region");
+    }
+
+  }
+
+  // public void onBeaconServiceConnect() {
+  //     Log.d("uk.ac.lancaster.library.backgroundbeacons", "Connected to iBeacon Service");
+  //     // this.rangeRegion();
+  // }
+  //
+  // public void unbindService(ServiceConnection connection) {
+  //   Log.d("uk.ac.lancaster.library.backgroundbeacons", "unbind service");
+  //   this.getApplicationContext().unbindService(connection);
+  // }
+  //
+  // public boolean bindService(Intent intent, ServiceConnection connection, int mode) {
+  //   Log.d("uk.ac.lancaster.library.backgroundbeacons", "Bind Service");
+  //   return this.getApplicationContext().bindService(intent, connection, mode);
+  // }
+
+  // private String beaconDistanceToProximity(double distance) {
+  //
+  //   if (distance > 0.0 && distance < 0.5) {
+  //     return "ProximityImmediate";
+  //   }
+  //
+  //   if (distance > 0.5 && distance < 3.0) {
+  //     return "ProximityNear";
+  //   }
+  //
+  //   if (distance > 3.0) {
+  //     return "ProximityFar";
+  //   }
+  //
+  //   return "ProximityUnknown";
+  //
+  // }
+  //
+
+  //
+  // public void rangeRegion() {
+  //   try {
+  //     Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: Starting to range regions");
+  //
+  //     iBeaconManager.startRangingBeaconsInRegion(region);
+  //     iBeaconManager.setRangeNotifier(this);
+  //
+  //   } catch (RemoteException e) {
+  //     Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: RANGE REMOTE EXCEPTION");
+  //   }
+  // }
+  //
+  // public void didRangeBeaconsInRegion(final Collection<Beacon> beacons, final Region region) {
+  //   Log.d("uk.ac.lancaster.library.backgroundbeacons", "didRangeBeaconsInRegion called");
+  //
+  //   String regionIdentifier = null;
+  //   String regionUUID = null;
+  //   String regionMajor = null;
+  //   String regionMinor = null;
+  //
+  //   if (region.getUniqueId() != null) {
+  //     regionIdentifier = region.getUniqueId().toString();
+  //   }
+  //
+  //   if (region.getId1() != null) {
+  //     regionUUID = region.getId1().toString();
+  //   }
+  //
+  //   if (region.getId2() != null) {
+  //     regionMajor = region.getId2().toString();
+  //   }
+  //
+  //   if (region.getId3() != null) {
+  //     regionMinor = region.getId3().toString();
+  //   }
+  //
+  //   BeaconRegion beaconRegion = new BeaconRegion(regionIdentifier, regionUUID, regionMajor, regionMinor);
+  //
+  //   for (Beacon beacon: beacons) {
+  //     Log.d("uk.ac.lancaster.library.backgroundbeacons", "I see beacon " + beacon);
+  //
+  //     String beaconUUID = null;
+  //     String beaconMajor = null;
+  //     String beaconMinor = null;
+  //
+  //     if (beacon.getId1() != null) {
+  //       beaconUUID = beacon.getId1().toString();
+  //     }
+  //
+  //     if (beacon.getId2() != null) {
+  //       beaconMajor = beacon.getId2().toString();
+  //     }
+  //
+  //     if (beacon.getId3() != null) {
+  //       beaconMinor = beacon.getId3().toString();
+  //     }
+  //
+  //     BeaconInfo beaconInfo = new BeaconInfo(beaconUUID, beaconMajor, beaconMinor);
+  //     BeaconEvent beaconEvent = new BeaconEvent("onExitRegion", beaconInfo, beaconDistanceToProximity(beacon.getDistance()), Double.toString(beacon.getDistance()), Integer.toString(beacon.getRssi()));
+  //
+  //     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+  //     dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+  //     String timestamp = dateFormat.format(new Date());
+  //
+  //     BeaconTrackingEvent beaconTrackingEvent = new BeaconTrackingEvent(this.settings.getDeviceId(), beaconEvent, beaconRegion, timestamp);
+  //
+  //     beaconTrackingService.RangeBeaconEvent(beaconTrackingEvent);
+  //
+  //     Log.d("uk.ac.lancaster.library.backgroundbeacons", beaconTrackingEvent.toJsonObject().toString());
+  //
+  //   }
+  // }
+  //
+  // public Context getApplicationContext() {
+  //   return this.getApplication().getApplicationContext();
+  // }
 
 }

@@ -30,7 +30,7 @@ BackgroundBeaconMonitoring.prototype.stopRangingRegion = function (identifier, s
 
 };
 
-backgroundBeaconMonitoring.prototype.setMovementPreference = function (preference, successCallback, errorCallback) {
+BackgroundBeaconMonitoring.prototype.setMovementPreference = function (preference, successCallback, errorCallback) {
   exec(successCallback, errorCallback, "BackgroundBeaconManager", "setMovementPreference", [preference]);
 };
 

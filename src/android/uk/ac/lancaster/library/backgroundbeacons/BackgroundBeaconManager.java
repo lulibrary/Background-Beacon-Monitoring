@@ -17,12 +17,14 @@ import uk.ac.lancaster.library.backgroundbeacons.BackgroundBeaconService.LocalBi
 import android.content.ServiceConnection;
 import android.content.ComponentName;
 import android.os.IBinder;
+import android.Manifest;
 
 public class BackgroundBeaconManager extends CordovaPlugin {
 
   private SharedPreferencesUtility settings;
   private BackgroundBeaconService backgroundBeaconService;
   boolean serviceBound = false;
+  public static final String [] PERMISSIONS = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION };
 
   public BackgroundBeaconManager() {
 
@@ -149,12 +151,18 @@ public class BackgroundBeaconManager extends CordovaPlugin {
     } else if (action.equals("setMovementPreference")) {
       Log.d("uk.ac.lancaster.library.myjourneys", "Passed in arg: " + args.getBoolean(0));
       backgroundBeaconService.setMovementPreference(args.getBoolean(0));
+    } else if (action.equals("requestPermissions")) {
+      cordova.requestPermissions(this, 0, PERMISSIONS);
     } else {
       callbackContent.error("UNKNOWN OPERATION");
       return false;
     }
 
     return true;
+
+  }
+
+  public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
 
   }
 

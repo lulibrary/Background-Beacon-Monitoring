@@ -146,6 +146,8 @@ public class BackgroundBeaconManager extends CordovaPlugin {
         callbackContent.error("SERVICE NOT BOUND");
       }
 
+    } else if (action.equals("setMovementPreference")) {
+      backgroundBeaconService.setMovementPreference(args.getBoolean(0));
     } else {
       callbackContent.error("UNKNOWN OPERATION");
       return false;

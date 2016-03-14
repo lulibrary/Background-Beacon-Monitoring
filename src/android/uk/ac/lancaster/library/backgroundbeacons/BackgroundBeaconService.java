@@ -212,4 +212,8 @@ public class BackgroundBeaconService extends Service {
 
   }
 
+  public void setMovementPreference(Boolean preference) {
+    this.settings.setSendMovementData(preference);
+  }
+
 }

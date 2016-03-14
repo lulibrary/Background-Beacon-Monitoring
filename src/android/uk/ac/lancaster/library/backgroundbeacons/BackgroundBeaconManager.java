@@ -48,6 +48,7 @@ public class BackgroundBeaconManager extends CordovaPlugin {
         this.settings.setDeviceId(args.getString(2));
         this.settings.setApiUrl(args.getString(3));
         this.settings.setApiVersion(args.getString(4));
+        this.settings.setSendMovementData(args.getBoolean(5));
       } else {
         Log.d("uk.ac.lancaster.library.backgroundbeacons", "Preferences already exist");
       }

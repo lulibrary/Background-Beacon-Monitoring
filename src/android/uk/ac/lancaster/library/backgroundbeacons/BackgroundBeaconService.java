@@ -56,6 +56,7 @@ public class BackgroundBeaconService extends Service {
       Log.d("uk.ac.lancaster.library.backgroundbeacons", "DEVICE ID: " + this.settings.getDeviceId());
       Log.d("uk.ac.lancaster.library.backgroundbeacons", "API URL: " + this.settings.getApiUrl());
       Log.d("uk.ac.lancaster.library.backgroundbeacons", "API VERSION: " + this.settings.getApiVersion());
+      Log.d("ul.ac.lancaster.library.backgroundbeacons", "SEND MOVEMENT DATA: " + this.settings.getSendMovementData());
     }
 
     iBeaconManager = BeaconManager.getInstanceForApplication(this);

@@ -48,6 +48,7 @@ public class BackgroundBeaconManager extends CordovaPlugin {
         this.settings.setDeviceId(args.getString(2));
         this.settings.setApiUrl(args.getString(3));
         this.settings.setApiVersion(args.getString(4));
+        this.settings.setSendMovementData(args.getBoolean(5));
       } else {
         Log.d("uk.ac.lancaster.library.backgroundbeacons", "Preferences already exist");
       }
@@ -145,6 +146,9 @@ public class BackgroundBeaconManager extends CordovaPlugin {
         callbackContent.error("SERVICE NOT BOUND");
       }
 
+    } else if (action.equals("setMovementPreference")) {
+      Log.d("uk.ac.lancaster.library.myjourneys", "Passed in arg: " + args.getBoolean(0));
+      backgroundBeaconService.setMovementPreference(args.getBoolean(0));
     } else {
       callbackContent.error("UNKNOWN OPERATION");
       return false;

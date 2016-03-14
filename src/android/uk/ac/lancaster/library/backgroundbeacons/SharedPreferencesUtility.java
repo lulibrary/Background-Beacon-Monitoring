@@ -54,6 +54,7 @@ public class SharedPreferencesUtility {
   }
 
   public void setSendMovementData(Boolean sendMovementData) {
+    Log.d("uk.ac.lancs.library.myjourenys", "Movement Data: " + sendMovementData);
     this.editor.putBoolean(SEND_MOVEMENT_DATA, sendMovementData);
     this.editor.commit();
   }
@@ -79,7 +80,7 @@ public class SharedPreferencesUtility {
   }
 
   public boolean getSendMovementData() {
-    return this.settings.getBoolean(SEND_MOVEMENT_DATA, null);
+    return this.settings.getBoolean(SEND_MOVEMENT_DATA, false);
   }
 
   public boolean exist() {

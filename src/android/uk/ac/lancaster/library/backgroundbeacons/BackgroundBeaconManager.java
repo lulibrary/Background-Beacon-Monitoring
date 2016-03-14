@@ -147,6 +147,7 @@ public class BackgroundBeaconManager extends CordovaPlugin {
       }
 
     } else if (action.equals("setMovementPreference")) {
+      Log.d("uk.ac.lancaster.library.myjourneys", "Passed in arg: " + args.getBoolean(0));
       backgroundBeaconService.setMovementPreference(args.getBoolean(0));
     } else {
       callbackContent.error("UNKNOWN OPERATION");

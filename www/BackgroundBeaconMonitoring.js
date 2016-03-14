@@ -34,6 +34,10 @@ BackgroundBeaconMonitoring.prototype.setMovementPreference = function (preferenc
   exec(successCallback, errorCallback, "BackgroundBeaconManager", "setMovementPreference", [preference]);
 };
 
+BackgroundBeaconMonitoring.prototype.requestPermissions = function (successCallback, errorCallback) {
+  exec(successCallback, errorCallback, "BackgroundBeaconManager", "requestPermissions", []);
+};
+
 var backgroundBeaconMonitoring = new BackgroundBeaconMonitoring();
 
 module.exports = backgroundBeaconMonitoring;

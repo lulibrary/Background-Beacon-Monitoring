@@ -15,6 +15,7 @@ public class SharedPreferencesUtility {
   public static final String DEVICE_ID = "DEVICE_ID";
   public static final String API_URL = "API_URL";
   public static final String API_VERSION = "API_VERSION";
+  public static final String SEND_MOVEMENT_DATA = "SEND_MOVEMENT_DATA";
 
   private Context context;
   private SharedPreferences settings;
@@ -52,6 +53,11 @@ public class SharedPreferencesUtility {
     this.editor.commit();
   }
 
+  public void setSendMovementData(Boolean sendMovementData) {
+    this.editor.putBoolean(SEND_MOVEMENT_DATA, sendMovementData);
+    this.editor.commit();
+  }
+
   public String getApiToken() {
     return this.settings.getString(API_TOKEN, null);
   }
@@ -70,6 +76,10 @@ public class SharedPreferencesUtility {
 
   public String getApiVersion() {
     return this.settings.getString(API_VERSION, null);
+  }
+
+  public boolean getSendMovementData() {
+    return this.settings.getBoolean(SEND_MOVEMENT_DATA, null);
   }
 
   public boolean exist() {
@@ -91,6 +101,10 @@ public class SharedPreferencesUtility {
     }
 
     if (!this.settings.contains(API_URL)) {
+      return false;
+    }
+
+    if(!this.settings.contains(SEND_MOVEMENT_DATA)) {
       return false;
     }
 

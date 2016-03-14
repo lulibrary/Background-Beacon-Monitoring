@@ -89,12 +89,56 @@ public class BackgroundBeaconManager extends CordovaPlugin {
         Log.d("uk.ac.lancaster.library.backgroundbeacons", "Service not bound");
         callbackContent.error("SERVICE NOT BOUND");
       }
+
     } else if (action.equals("stopMonitoringRegion")) {
 
-      Log.d("uk.ac.lancaster.library.backgroundbeacons", "Started monitoring region");
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "Stop monitoring region");
       if(serviceBound) {
         backgroundBeaconService.stopMonitoringRegion(args.getString(0));
         Log.d("uk.ac.lancaster.library.backgroundbeacons", "Service bound and stop monitoring region called");
+        callbackContent.success();
+      } else {
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Service not bound");
+        callbackContent.error("SERVICE NOT BOUND");
+      }
+
+    } else if (action.equals("startRangingRegion")) {
+
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "Started ranging region");
+      if(serviceBound) {
+
+        Integer major;
+        Integer minor;
+
+        if (args.getString(2).isEmpty()) {
+          major = null;
+        } else {
+          major = args.getInt(2);
+        }
+
+        if (args.getString(3).isEmpty()) {
+          minor = null;
+        } else {
+          minor = args.getInt(3);
+        }
+
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Major: " + major);
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Minor: " + minor);
+
+        backgroundBeaconService.startRangingRegion(args.getString(0), args.getString(1), major, minor);
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Service bound and starting ranging region called");
+        callbackContent.success();
+      } else {
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Service not bound");
+        callbackContent.error("SERVICE NOT BOUND");
+      }
+
+    } else if (action.equals("stopRangingRegion")) {
+
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "Stop Ranging region");
+      if(serviceBound) {
+        backgroundBeaconService.stopRangingRegion(args.getString(0));
+        Log.d("uk.ac.lancaster.library.backgroundbeacons", "Service bound and stop ranging region called");
         callbackContent.success();
       } else {
         Log.d("uk.ac.lancaster.library.backgroundbeacons", "Service not bound");

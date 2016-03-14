@@ -24,7 +24,9 @@ public class MonitoringConsumer implements BeaconConsumer {
     beaconManager.bind(this);
   }
 
-  public void onBeaconServiceConnect() {}
+  public void onBeaconServiceConnect() {
+    Log.d("uk.ac.lancaster.library.backgroundbeacons", "BEACON CONSUMER CONNECTED");
+  }
 
   public boolean bindService(Intent intent, ServiceConnection conn, int arg2) {
     this.serviceIntent = intent;

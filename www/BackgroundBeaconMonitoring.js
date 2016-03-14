@@ -19,6 +19,17 @@ BackgroundBeaconMonitoring.prototype.stopMonitoringRegion = function (identifier
 
 };
 
+BackgroundBeaconMonitoring.prototype.startRangingRegion = function (identifier, uuid, major, minor, successCallback, errorCallback) {
+  console.log("start ranging region called");
+  exec(successCallback, errorCallback, "BackgroundBeaconManager", "startRangingRegion", [identifier, uuid, major, minor]);
+};
+
+BackgroundBeaconMonitoring.prototype.stopRangingRegion = function (identifier, successCallback, errorCallback) {
+  console.log("stop ranging region called");
+  exec(successCallback, errorCallback, "BackgroundBeaconManager", "stopRangingRegion", [identifier]);
+
+};
+
 var backgroundBeaconMonitoring = new BackgroundBeaconMonitoring();
 
 module.exports = backgroundBeaconMonitoring;

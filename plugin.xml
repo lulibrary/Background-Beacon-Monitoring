@@ -53,6 +53,7 @@
     <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/BeaconTrackingService.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
     <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/BeaconLoggingMonitorNotifier.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
     <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/MonitoringConsumer.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
+    <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/BeaconLoggingRangeNotifier.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
 
     <!-- <source-file src="libs/android/altbeacon.jar" target-dir="libs" framework="true" /> -->
   </platform>

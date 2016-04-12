@@ -10,8 +10,8 @@ public class SharedPreferencesUtility {
 
   public static final String PREFERENCES_NAME = "BACKGROUND_BEACONS_PREFS";
 
-  public static final String API_TOKEN = "API_PARTICIPANT_TOKEN";
-  public static final String API_USER = "API_PARTICIPANT_EMAIL";
+  public static final String API_PARTICIPANT_TOKEN = "API_PARTICIPANT_TOKEN";
+  public static final String API_PARTICIPANT_EMAIL = "API_PARTICIPANT_EMAIL";
   public static final String DEVICE_ID = "DEVICE_ID";
   public static final String API_URL = "API_URL";
   public static final String API_VERSION = "API_VERSION";
@@ -59,12 +59,12 @@ public class SharedPreferencesUtility {
     this.editor.commit();
   }
 
-  public String getApiToken() {
-    return this.settings.getString(API_TOKEN, null);
+  public String getApiParticipantToken() {
+    return this.settings.getString(API_PARTICIPANT_TOKEN, null);
   }
 
-  public String getApiUser() {
-    return this.settings.getString(API_USER, null);
+  public String getApiParticipantEmail() {
+    return this.settings.getString(API_PARTICIPANT_EMAIL, null);
   }
 
   public String getDeviceId() {
@@ -85,11 +85,11 @@ public class SharedPreferencesUtility {
 
   public boolean exist() {
 
-    if (!this.settings.contains(API_TOKEN)) {
+    if (!this.settings.contains(API_PARTICIPANT_TOKEN)) {
       return false;
     }
 
-    if (!this.settings.contains(API_USER)) {
+    if (!this.settings.contains(API_PARTICIPANT_EMAIL)) {
       return false;
     }
 

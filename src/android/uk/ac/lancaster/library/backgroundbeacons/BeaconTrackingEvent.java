@@ -34,7 +34,7 @@ public class BeaconTrackingEvent {
       beacon_event.accumulate("region", this.region.toJsonObject());
       beacon_event.accumulate("beacon", this.beaconEvent.toJsonObject());
 
-      response.accumulate("beacon_event", region_event);
+      response.accumulate("beacon_event", beacon_event);
 
 
 
@@ -43,7 +43,6 @@ public class BeaconTrackingEvent {
     }
 
     return response;
-    }
 
   }
 

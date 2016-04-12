@@ -15,6 +15,7 @@ public class RegionTrackingEvent {
 
   public RegionTrackingEvent(String deviceId, String eventType, BeaconRegion region, String timestamp) {
     this.deviceId = deviceId;
+    this.eventType = eventType;
     this.region = region;
     this.timestamp = timestamp;
   }
@@ -30,7 +31,7 @@ public class RegionTrackingEvent {
       device.accumulate("uuid", this.deviceId);
       device.accumulate("timestamp", this.timestamp);
 
-      region_event.accumulate("event_type", this.event_type);
+      region_event.accumulate("event_type", this.eventType);
       region_event.accumulate("device", device);
       region_event.accumulate("region", this.region.toJsonObject());
 

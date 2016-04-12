@@ -13,6 +13,7 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 
 import uk.ac.lancaster.library.backgroundbeacons.BeaconTrackingEvent;
+import uk.ac.lancaster.library.backgroundbeacons.RegionTrackingEvent;
 
 public class BeaconTrackingService {
 
@@ -28,12 +29,12 @@ public class BeaconTrackingService {
 
   }
 
-  public void EnterRegionEvent(BeaconTrackingEvent event) {
+  public void EnterRegionEvent(RegionTrackingEvent event) {
 
     if (this.settings.getSendMovementData()) {
       try {
 
-        URL url = new URL(this.apiUrl + this.apiVersion + "/tracking/locations/beacons/regions");
+        URL url = new URL(this.apiUrl + this.apiVersion + "/app/events/location/region_events");
 
         String json = event.toJsonObject().toString();
 
@@ -66,12 +67,12 @@ public class BeaconTrackingService {
 
   }
 
-  public void ExitRegionEvent(BeaconTrackingEvent event) {
+  public void ExitRegionEvent(RegionTrackingEvent event) {
 
     if (this.settings.getSendMovementData()) {
       try {
 
-        URL url = new URL(this.apiUrl + this.apiVersion + "/tracking/locations/beacons/regions");
+        URL url = new URL(this.apiUrl + this.apiVersion + "/app/events/location/region_events");
 
         String json = event.toJsonObject().toString();
 
@@ -109,7 +110,7 @@ public class BeaconTrackingService {
     if (this.settings.getSendMovementData()) {
       try {
 
-        URL url = new URL(this.apiUrl + this.apiVersion + "/tracking/locations/beacons");
+        URL url = new URL(this.apiUrl + this.apiVersion + "/app/events/location/beacon_events");
 
         String json = event.toJsonObject().toString();
 

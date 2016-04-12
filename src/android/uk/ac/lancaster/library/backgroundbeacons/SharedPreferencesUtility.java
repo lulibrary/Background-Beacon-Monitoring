@@ -10,8 +10,8 @@ public class SharedPreferencesUtility {
 
   public static final String PREFERENCES_NAME = "BACKGROUND_BEACONS_PREFS";
 
-  public static final String API_TOKEN = "API_TOKEN";
-  public static final String API_USER = "API_USER";
+  public static final String API_TOKEN = "API_PARTICIPANT_TOKEN";
+  public static final String API_USER = "API_PARTICIPANT_EMAIL";
   public static final String DEVICE_ID = "DEVICE_ID";
   public static final String API_URL = "API_URL";
   public static final String API_VERSION = "API_VERSION";
@@ -28,13 +28,13 @@ public class SharedPreferencesUtility {
     this.editor = this.settings.edit();
   }
 
-  public void setApiToken(String text) {
-    this.editor.putString(API_TOKEN, text);
+  public void setApiParticipantToken(String text) {
+    this.editor.putString(API_PARTICIPANT_TOKEN, text);
     this.editor.commit();
   }
 
-  public void setApiUser(String text) {
-    this.editor.putString(API_USER, text);
+  public void setApiParticpantEmail(String text) {
+    this.editor.putString(API_PARTICIPANT_EMAIL, text);
     this.editor.commit();
   }
 

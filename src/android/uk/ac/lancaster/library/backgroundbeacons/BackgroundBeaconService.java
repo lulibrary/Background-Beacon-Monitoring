@@ -51,8 +51,8 @@ public class BackgroundBeaconService extends Service {
     this.settings = new SharedPreferencesUtility(this.getApplicationContext());
 
     if (this.settings.exist()) {
-      Log.d("uk.ac.lancaster.library.backgroundbeacons", "API TOKEN: " + this.settings.getApiToken());
-      Log.d("uk.ac.lancaster.library.backgroundbeacons", "API USER: " + this.settings.getApiUser());
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "API PARTICIPANT TOKEN: " + this.settings.getApiParticipantToken());
+      Log.d("uk.ac.lancaster.library.backgroundbeacons", "API PARTICIPANT EMAIL: " + this.settings.getApiParticipantEmail());
       Log.d("uk.ac.lancaster.library.backgroundbeacons", "DEVICE ID: " + this.settings.getDeviceId());
       Log.d("uk.ac.lancaster.library.backgroundbeacons", "API URL: " + this.settings.getApiUrl());
       Log.d("uk.ac.lancaster.library.backgroundbeacons", "API VERSION: " + this.settings.getApiVersion());

@@ -13,6 +13,7 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 
 import uk.ac.lancaster.library.backgroundbeacons.BeaconTrackingEvent;
+import uk.ac.lancaster.library.backgroundbeacons.RegionTrackingEvent;
 
 public class BeaconTrackingService {
 
@@ -28,12 +29,12 @@ public class BeaconTrackingService {
 
   }
 
-  public void EnterRegionEvent(BeaconTrackingEvent event) {
+  public void EnterRegionEvent(RegionTrackingEvent event) {
 
     if (this.settings.getSendMovementData()) {
       try {
 
-        URL url = new URL(this.apiUrl + this.apiVersion + "/tracking/locations/beacons/regions");
+        URL url = new URL(this.apiUrl + this.apiVersion + "/app/events/location/region_events");
 
         String json = event.toJsonObject().toString();
 
@@ -47,8 +48,8 @@ public class BeaconTrackingService {
 
         conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
         conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestProperty("X-USER-EMAIL", this.settings.getApiUser());
-        conn.setRequestProperty("X-USER-TOKEN", this.settings.getApiToken());
+        conn.setRequestProperty("X-PARTICIPANT-EMAIL", this.settings.getApiParticipantEmail());
+        conn.setRequestProperty("X-PARTICIPANT-TOKEN", this.settings.getApiParticipantToken());
 
         conn.connect();
 
@@ -66,12 +67,12 @@ public class BeaconTrackingService {
 
   }
 
-  public void ExitRegionEvent(BeaconTrackingEvent event) {
+  public void ExitRegionEvent(RegionTrackingEvent event) {
 
     if (this.settings.getSendMovementData()) {
       try {
 
-        URL url = new URL(this.apiUrl + this.apiVersion + "/tracking/locations/beacons/regions");
+        URL url = new URL(this.apiUrl + this.apiVersion + "/app/events/location/region_events");
 
         String json = event.toJsonObject().toString();
 
@@ -85,8 +86,8 @@ public class BeaconTrackingService {
 
         conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
         conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestProperty("X-USER-EMAIL", this.settings.getApiUser());
-        conn.setRequestProperty("X-USER-TOKEN", this.settings.getApiToken());
+        conn.setRequestProperty("X-PARTICIPANT-EMAIL", this.settings.getApiParticipantEmail());
+        conn.setRequestProperty("X-PARTICIPANT-TOKEN", this.settings.getApiParticipantToken());
 
         conn.connect();
 
@@ -109,7 +110,7 @@ public class BeaconTrackingService {
     if (this.settings.getSendMovementData()) {
       try {
 
-        URL url = new URL(this.apiUrl + this.apiVersion + "/tracking/locations/beacons");
+        URL url = new URL(this.apiUrl + this.apiVersion + "/app/events/location/beacon_events");
 
         String json = event.toJsonObject().toString();
 
@@ -123,8 +124,8 @@ public class BeaconTrackingService {
 
         conn.setRequestProperty("Content-Type", "application/json;charset=utf-8");
         conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestProperty("X-USER-EMAIL", this.settings.getApiUser());
-        conn.setRequestProperty("X-USER-TOKEN", this.settings.getApiToken());
+        conn.setRequestProperty("X-PARTICIPANT-EMAIL", this.settings.getApiParticipantEmail());
+        conn.setRequestProperty("X-PARTICIPANT-TOKEN", this.settings.getApiParticipantToken());
 
         conn.connect();
 

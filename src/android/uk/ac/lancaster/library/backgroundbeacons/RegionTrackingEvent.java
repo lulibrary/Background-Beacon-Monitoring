@@ -6,16 +6,16 @@ import uk.ac.lancaster.library.backgroundbeacons.BeaconRegion;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-public class BeaconTrackingEvent {
+public class RegionTrackingEvent {
 
   private String deviceId;
-  private BeaconEvent beaconEvent;
+  private String eventType;
   private BeaconRegion region;
   private String timestamp;
 
-  public BeaconTrackingEvent(String deviceId, BeaconEvent beaconEvent, BeaconRegion region, String timestamp) {
+  public RegionTrackingEvent(String deviceId, String eventType, BeaconRegion region, String timestamp) {
     this.deviceId = deviceId;
-    this.beaconEvent = beaconEvent;
+    this.eventType = eventType;
     this.region = region;
     this.timestamp = timestamp;
   }
@@ -23,18 +23,19 @@ public class BeaconTrackingEvent {
   public JSONObject toJsonObject() {
 
     JSONObject response = new JSONObject();
-    JSONObject beacon_event = new JSONObject();
+    JSONObject region_event = new JSONObject();
     JSONObject device = new JSONObject();
 
     try {
 
       device.accumulate("uuid", this.deviceId);
       device.accumulate("timestamp", this.timestamp);
-      beacon_event.accumulate("device", device);
-      beacon_event.accumulate("region", this.region.toJsonObject());
-      beacon_event.accumulate("beacon", this.beaconEvent.toJsonObject());
 
-      response.accumulate("beacon_event", beacon_event);
+      region_event.accumulate("event_type", this.eventType);
+      region_event.accumulate("device", device);
+      region_event.accumulate("region", this.region.toJsonObject());
+
+      response.accumulate("region_event", region_event);
 
 
 

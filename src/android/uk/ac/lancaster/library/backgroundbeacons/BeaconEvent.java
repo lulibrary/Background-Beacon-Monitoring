@@ -6,14 +6,12 @@ import org.json.JSONException;
 
 public class BeaconEvent {
 
-  private String eventType;
   private BeaconInfo beacon;
   private String proximity;
   private String accuracy;
   private String rssi;
 
-  public BeaconEvent(String eventType, BeaconInfo beacon, String proximity, String accuracy, String rssi) {
-    this.eventType = eventType;
+  public BeaconEvent(BeaconInfo beacon, String proximity, String accuracy, String rssi) {
     this.beacon = beacon;
     this.proximity = proximity;
     this.accuracy = accuracy;
@@ -26,10 +24,16 @@ public class BeaconEvent {
 
     try {
 
-      response.accumulate("eventType", this.eventType);
+      if (this.beacon.getUuid() != null) {
+        response.accumulate("uuid", this.beacon.getUuid());
+      }
 
-      if (!this.beacon.isEmpty()) {
-        response.accumulate("beacon", this.beacon.toJsonObject());
+      if (this.beacon.getMajor() != null) {
+        response.accumulate("major", this.beacon.getMajor());
+      }
+
+      if (this.beacon.getMinor() != null) {
+        response.accumulate("minor", this.beacon.getMinor());
       }
 
       if (this.proximity != null) {
@@ -37,7 +41,7 @@ public class BeaconEvent {
       }
 
       if (this.accuracy != null) {
-        response.accumulate("accuracy", this.accuracy);
+        response.accumulate("distance", this.accuracy);
       }
 
       if (this.rssi != null) {

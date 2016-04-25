@@ -50,6 +50,7 @@
     <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/BeaconInfo.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
     <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/BeaconRegion.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
     <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/BeaconTrackingEvent.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
+    <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/RegionTrackingEvent.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
     <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/BeaconTrackingService.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
     <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/BeaconLoggingMonitorNotifier.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />
     <source-file src="src/android/uk/ac/lancaster/library/backgroundbeacons/MonitoringConsumer.java" target-dir="src/uk/ac/lancaster/library/backgroundbeacons" />

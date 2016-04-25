@@ -1,8 +1,5 @@
 package uk.ac.lancaster.library.backgroundbeacons;
 
-import org.json.JSONObject;
-import org.json.JSONException;
-
 public class BeaconInfo {
 
   private String uuid;
@@ -15,20 +12,16 @@ public class BeaconInfo {
     this.minor = minor;
   }
 
-  public JSONObject toJsonObject() {
-    JSONObject response = new JSONObject();
+  public String getUuid() {
+    return this.uuid;
+  }
 
-    try {
+  public String getMajor() {
+    return this.major;
+  }
 
-      response.accumulate("uuid", this.uuid);
-      response.accumulate("major", this.major);
-      response.accumulate("minor", this.minor);
-
-    } catch (JSONException e) {
-
-    }
-
-    return response;
+  public String getMinor() {
+    return this.minor;
   }
 
   public boolean isEmpty() {

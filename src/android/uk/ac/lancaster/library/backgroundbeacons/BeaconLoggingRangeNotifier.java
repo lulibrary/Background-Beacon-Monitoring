@@ -24,7 +24,7 @@ public class BeaconLoggingRangeNotifier implements RangeNotifier {
 
   public BeaconLoggingRangeNotifier(SharedPreferencesUtility settings) {
     this.settings = settings;
-    beaconTrackingService = new BeaconTrackingService(this.settings);
+    this.beaconTrackingService = new BeaconTrackingService(this.settings);
   }
 
   public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
@@ -74,7 +74,7 @@ public class BeaconLoggingRangeNotifier implements RangeNotifier {
       }
 
       BeaconInfo beaconInfo = new BeaconInfo(beaconUUID, beaconMajor, beaconMinor);
-      BeaconEvent beaconEvent = new BeaconEvent("rangedBeacon", beaconInfo, beaconDistanceToProximity(beacon.getDistance()), Double.toString(beacon.getDistance()), Integer.toString(beacon.getRssi()));
+      BeaconEvent beaconEvent = new BeaconEvent(beaconInfo, beaconDistanceToProximity(beacon.getDistance()), Double.toString(beacon.getDistance()), Integer.toString(beacon.getRssi()));
 
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
       dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -82,7 +82,7 @@ public class BeaconLoggingRangeNotifier implements RangeNotifier {
 
       BeaconTrackingEvent beaconTrackingEvent = new BeaconTrackingEvent(this.settings.getDeviceId(), beaconEvent, beaconRegion, timestamp);
 
-      beaconTrackingService.RangeBeaconEvent(beaconTrackingEvent);
+      this.beaconTrackingService.RangeBeaconEvent(beaconTrackingEvent);
 
       Log.d("uk.ac.lancaster.library.backgroundbeacons", beaconTrackingEvent.toJsonObject().toString());
 

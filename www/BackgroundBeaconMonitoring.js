@@ -4,8 +4,8 @@ function BackgroundBeaconMonitoring() {
 
 }
 
-BackgroundBeaconMonitoring.prototype.startService = function (api_token, api_user, device_id, api_url, api_version, sendMovementData, successCallback, errorCallback) {
-  exec(successCallback, errorCallback, "BackgroundBeaconManager", "createService", [api_token, api_user, device_id, api_url, api_version, sendMovementData]);
+BackgroundBeaconMonitoring.prototype.startService = function (api_participant_token, api_participant_email, device_id, api_url, api_version, sendMovementData, successCallback, errorCallback) {
+  exec(successCallback, errorCallback, "BackgroundBeaconManager", "createService", [api_participant_token, api_participant_email, device_id, api_url, api_version, sendMovementData]);
 };
 
 BackgroundBeaconMonitoring.prototype.startMonitoringRegion = function (identifier, uuid, major, minor, successCallback, errorCallback) {

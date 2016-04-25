@@ -7,9 +7,10 @@ import android.util.Log;
 
 import uk.ac.lancaster.library.backgroundbeacons.SharedPreferencesUtility;
 import uk.ac.lancaster.library.backgroundbeacons.BeaconTrackingService;
-import uk.ac.lancaster.library.backgroundbeacons.BeaconTrackingEvent;
+import uk.ac.lancaster.library.backgroundbeacons.RegionTrackingEvent;
 import uk.ac.lancaster.library.backgroundbeacons.BeaconInfo;
 import uk.ac.lancaster.library.backgroundbeacons.BeaconEvent;
+import uk.ac.lancaster.library.backgroundbeacons.BeaconRegion;
 
 import java.util.Date;
 import java.util.TimeZone;
@@ -22,15 +23,12 @@ public class BeaconLoggingMonitorNotifier implements MonitorNotifier {
 
   public BeaconLoggingMonitorNotifier(SharedPreferencesUtility settings) {
     this.settings = settings;
-    beaconTrackingService = new BeaconTrackingService(this.settings);
+    this.beaconTrackingService = new BeaconTrackingService(this.settings);
   }
 
   public void didEnterRegion(Region region) {
 
     Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: Entered region.");
-
-    BeaconInfo beaconInfo = new BeaconInfo(null, null, null);
-    BeaconEvent beaconEvent = new BeaconEvent("onEnterRegion", beaconInfo, null, null, null);
 
     String regionIdentifier = null;
     String regionUUID = null;
@@ -59,11 +57,11 @@ public class BeaconLoggingMonitorNotifier implements MonitorNotifier {
     dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     String timestamp = dateFormat.format(new Date());
 
-    BeaconTrackingEvent beaconTrackingEvent = new BeaconTrackingEvent(this.settings.getDeviceId(), beaconEvent, beaconRegion, timestamp);
+    RegionTrackingEvent regionTrackingEvent = new RegionTrackingEvent(this.settings.getDeviceId(), "entered_region", beaconRegion, timestamp);
 
-    beaconTrackingService.EnterRegionEvent(beaconTrackingEvent);
+    this.beaconTrackingService.EnterRegionEvent(regionTrackingEvent);
 
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", beaconTrackingEvent.toJsonObject().toString());
+    Log.d("uk.ac.lancaster.library.backgroundbeacons", regionTrackingEvent.toJsonObject().toString());
 
   }
 
@@ -71,9 +69,6 @@ public class BeaconLoggingMonitorNotifier implements MonitorNotifier {
 
     Log.d("uk.ac.lancaster.library.backgroundbeacons", "BACKGROUND: Exited region.");
 
-    BeaconInfo beaconInfo = new BeaconInfo(null, null, null);
-    BeaconEvent beaconEvent = new BeaconEvent("onExitRegion", beaconInfo, null, null, null);
-
     String regionIdentifier = null;
     String regionUUID = null;
     String regionMajor = null;
@@ -101,11 +96,11 @@ public class BeaconLoggingMonitorNotifier implements MonitorNotifier {
     dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
     String timestamp = dateFormat.format(new Date());
 
-    BeaconTrackingEvent beaconTrackingEvent = new BeaconTrackingEvent(this.settings.getDeviceId(), beaconEvent, beaconRegion, timestamp);
+    RegionTrackingEvent regionTrackingEvent = new RegionTrackingEvent(this.settings.getDeviceId(), "exited_region", beaconRegion, timestamp);
 
-    beaconTrackingService.ExitRegionEvent(beaconTrackingEvent);
+    this.beaconTrackingService.ExitRegionEvent(regionTrackingEvent);
 
-    Log.d("uk.ac.lancaster.library.backgroundbeacons", beaconTrackingEvent.toJsonObject().toString());
+    Log.d("uk.ac.lancaster.library.backgroundbeacons", regionTrackingEvent.toJsonObject().toString());
 
   }
 

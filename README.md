@@ -125,6 +125,6 @@ Changes the movement preference which controls whether the service sends interac
 
 Contributions welcome by pull request.
 
-## Licence
+## License
 
 Apache License v2.0

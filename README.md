@@ -35,7 +35,7 @@ Requests the permissions needed to access the users location and therefore the b
 | Parameter | Description |
 | --- | --- |
 | successCallback | [Optional] Callback function to run when the method returns successfully |
-| errorCallback | [Optional] Callback function to run when the method returns an error |
+| errorCallback | [Optional] Callback function to run when the method returns an error, the function can accept a parameter to hold the message returned from the native layer so any errors encountered eg. 'PERMISSION DENIED' can be dealt with in the calling application appropriately |
 
 #### startService()
 

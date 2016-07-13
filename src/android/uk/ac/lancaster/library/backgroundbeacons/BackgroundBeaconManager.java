@@ -18,11 +18,13 @@ import android.content.ServiceConnection;
 import android.content.ComponentName;
 import android.os.IBinder;
 import android.Manifest;
+import android.content.pm.PackageManager;
 
 public class BackgroundBeaconManager extends CordovaPlugin {
 
   private SharedPreferencesUtility settings;
   private BackgroundBeaconService backgroundBeaconService;
+  private CallbackContext callbackContext;
   boolean serviceBound = false;
   public static final String [] PERMISSIONS = { Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION };
 
@@ -152,6 +154,7 @@ public class BackgroundBeaconManager extends CordovaPlugin {
       Log.d("uk.ac.lancaster.library.myjourneys", "Passed in arg: " + args.getBoolean(0));
       backgroundBeaconService.setMovementPreference(args.getBoolean(0));
     } else if (action.equals("requestPermissions")) {
+      this.callbackContext = callbackContent;
       cordova.requestPermissions(this, 0, PERMISSIONS);
     } else {
       callbackContent.error("UNKNOWN OPERATION");
@@ -163,6 +166,36 @@ public class BackgroundBeaconManager extends CordovaPlugin {
   }
 
   public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
+
+    Log.d("uk.ac.lancaster.library.myjourneys", "Grant Results length: " + grantResults.length);
+    Log.d("uk.ac.lancaster.library.myjourneys", "request code: " + requestCode);
+
+    switch(requestCode) {
+
+      case 0:
+
+        if (grantResults.length != 2) {
+          Log.d("uk.ac.lancaster.library.myjourneys", "PERMISSION CHECK FAILED");
+          this.callbackContext.error("PERMISSION CHECK FAILED");
+        } else {
+
+          // Both permission grant results need to be denied for permissions to have both been denied.
+          // The plugin only requires one of COARSE_LOCATION or FINE_LOCATION to access iBeacon information.
+
+          if (grantResults[0] == PackageManager.PERMISSION_DENIED && grantResults[1] == PackageManager.PERMISSION_DENIED) {
+            Log.d("uk.ac.lancaster.library.myjourneys", "BOTH PERMISSIONS DENIED");
+            this.callbackContext.error("PERMISSION DENIED");
+            return;
+          }
+
+          Log.d("uk.ac.lancaster.library.myjourneys", "PERMISSIONS NOT DENIED");
+
+          this.callbackContext.success();
+        }
+
+        break;
+
+    }
 
   }
 

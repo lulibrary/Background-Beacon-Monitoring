@@ -167,11 +167,15 @@ public class BackgroundBeaconManager extends CordovaPlugin {
 
   public void onRequestPermissionResult(int requestCode, String[] permissions, int[] grantResults) throws JSONException {
 
+    Log.d("uk.ac.lancaster.library.myjourneys", "Grant Results length: " + grantResults.length);
+    Log.d("uk.ac.lancaster.library.myjourneys", "request code: " + requestCode);
+
     switch(requestCode) {
 
       case 0:
 
-        if (permissions.length != 2) {
+        if (grantResults.length != 2) {
+          Log.d("uk.ac.lancaster.library.myjourneys", "PERMISSION CHECK FAILED");
           this.callbackContext.error("PERMISSION CHECK FAILED");
         } else {
 
@@ -179,9 +183,12 @@ public class BackgroundBeaconManager extends CordovaPlugin {
           // The plugin only requires one of COARSE_LOCATION or FINE_LOCATION to access iBeacon information.
 
           if (grantResults[0] == PackageManager.PERMISSION_DENIED && grantResults[1] == PackageManager.PERMISSION_DENIED) {
+            Log.d("uk.ac.lancaster.library.myjourneys", "BOTH PERMISSIONS DENIED");
             this.callbackContext.error("PERMISSION DENIED");
             return;
           }
+
+          Log.d("uk.ac.lancaster.library.myjourneys", "PERMISSIONS NOT DENIED");
 
           this.callbackContext.success();
         }

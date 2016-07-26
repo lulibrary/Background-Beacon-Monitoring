@@ -12,6 +12,16 @@ Installing the plugin is as simple as adding the plugin to cordova using the plu
 
 `cordova plugin add https://github.com/lulibrary/Background-Beacon-Monitoring.git`
 
+To install the plugin when using the Ionic framework the following command will add the plugin and save it to package.json.
+
+`ionic plugin add https://github.com/lulibrary/Background-Beacon-Monitoring.git`
+
+As https://github.com/driftyco/ionic-cli/issues/359 is still a re-occuring issue (even though its closed) you may need to do the following to see it referenced in package.json
+
+If this is not referenced in package.json in the cordovaPlugins array run the following to save all current plugins to the package.json.
+
+`ionic state save`
+
 Currently the altbeacon jar file is not linked when the plugin is installed due to a clash if the cordova-plugin-ibeacon is installed as this also uses the altbeacon library for Android (currently working on fixing this). If this is only being used then uncomment the following line in plugin.xml, fix for this is being worked on.
 
 `<!-- <source-file src="libs/android/altbeacon.jar" target-dir="libs" framework="true" /> -->`
